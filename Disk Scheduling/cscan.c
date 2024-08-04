@@ -33,7 +33,6 @@ int cScanShedule(int no_of_requests, int requests[no_of_requests], int current, 
             printf("::%d\n", current);
         }
     }
-98 183 37 122 14 124 65 67
 
     return seek_time;
 }
