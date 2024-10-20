@@ -1,51 +1,55 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct File{
-    int val;
-    struct File* next;
-};
+#define MAX 100
 
-struct File *head = NULL;
-struct File *tail = NULL;
+int main() {
+    int f[MAX], n, val, ch, b, start;
+  
+    for (int i = 0; i < MAX; i++)
+        f[i] = 0;
 
-void insert(int val){
-    struct File *n = malloc(sizeof(struct File));
-    n->val = val;
-    n->next = NULL;
-    if (!head){
-        head = n;
-    } else {
-        tail->next = n;
+    printf("Enter the number of blocks which are already allocated: ");
+    scanf("%d", &n);
+    printf("Enter the blocks which are already allocated: ");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &val);
+        f[val] = 1; 
     }
-    tail = n;
-}
 
-void print_list(){
-    for (struct File *current = head;current;current = current->next){
-        printf("%d ",current->val);
-    }
-    printf("\n");
-}
+    while (1) {
+        
+        printf("1. Add file\n");
+        printf("2. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &ch);
 
-int main(){
-    int command;
-    while (1){
-        printf("1.Allocate block\n");
-        printf("2.Show allocated blocks\n");
-        printf("3.Exit\n");
-        scanf("%d",&command);
-        if (command==1){
-            int next;
-            printf("Enter next block to be allocated: ");
-            scanf("%d",&next);
-            insert(next);
-        } else if (command==2){
-            print_list();
-        } else if (command==3){
-            return 0;
-        } else {
-            printf("Enter valid input: ");
+        switch (ch) {
+            case 1: {   
+                printf("Enter the number of blocks to be allocated and starting block: ");
+                scanf("%d %d", &b, &start);
+                if (f[start] == 1) {
+                    printf("Block %d is already allocated.\n", start);
+                    break; 
+                }
+                for (int i = start; i < (start + b); i++) {
+                    if (f[i] == 0) {
+                        f[i] = 1; 
+                        printf("Block %d allocated.\n", i);
+                    } else {
+                        printf("Block %d is already allocated.\n", i);
+                        b++; 
+                    }
+                }
+                break;
+            }
+            case 2: {
+                exit(0); 
+            }
+            default:
+                printf("Invalid choice. Please enter again.\n");
         }
     }
+    return 0;
 }
+
