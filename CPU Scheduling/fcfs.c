@@ -17,7 +17,7 @@ int fcfs(int n, int bt[n], int at[n], int id[n]){
 	int time=0, tat[n], wt[n];
 
 
-	printf("0 ");
+	printf("Gantt: 0 ");
 
 	for(int i=0; i<n; i++){
 		if(at[i]>time){
@@ -40,12 +40,10 @@ int main(){
 	int n, temp;
 	printf("Enter no. of process: ");
 	scanf("%d", &n);
-	
 	int bt[n], at[n], id[n];
 	for(int i=0; i<n; i++){
 		printf("Enter arrival time of process %d: ", i+1);
 		scanf("%d", &at[i]);
-
 		printf("Enter burst time of process %d: ", i+1);
 		scanf("%d", &bt[i]);
 		id[i] = i;

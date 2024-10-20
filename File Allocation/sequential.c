@@ -1,27 +1,40 @@
 #include <stdio.h>
-#include <string.h>
 
-struct File {
-    char name[20];
-    int start_block,num_blocks;
-};
+int main() {
+    char name[10][30]; 
+    int start[10], length[10], num, count = 0;
 
-int main(){
-    int n;
-    printf("Enter number of files: ");
-    scanf("%d",&n);
-    struct File files[n];
-    for (int i=0;i<n;++i){
-        printf("Enter file name: ");
-        scanf("%s",files[i].name);
-        printf("Enter start block: ");
-        scanf("%d",&files[i].start_block);
-        printf("Enter number of blocks: ");
-        scanf("%d",&files[i].num_blocks);
+    printf("Enter the number of files to be allocated: ");
+    scanf("%d", &num);
+
+    for (int i = 0; i < num; i++) {
+        printf("Enter the name of the file %d: ", i + 1);
+        scanf("%s", name[i]);
+        printf("Enter the start block of the file %d: ", i + 1);
+        scanf("%d", &start[i]);
+        printf("Enter the length of the file %d: ", i + 1);
+        scanf("%d", &length[i]);
+
+        for (int j = 0; j < i; j++) {
+            if ((start[i] >= start[j] && start[i] < start[j] + length[j]) || 
+                (start[i] + length[i] > start[j] && start[i] < start[j])) {
+                count = 1;
+                break;
+            }
+        }
+
+        if (count == 1) {
+            printf("%s cannot be allocated disk space due to overlap\n", name[i]);
+            count = 0; 
+        }
     }
-    printf("File Allocation Table:\n");
-    printf("File Name\tStart Block\tLength\n");
-    for (int i=0;i<n;++i){
-        printf("%s\t%d\t%d\n",files[i].name,files[i].start_block,files[i].num_blocks);
+
+    printf("\nFile Allocation Table\n");
+    printf("%-20s %-20s %-20s\n", "File Name", "Start Block", "Length");
+ 
+    for (int i = 0; i < num; i++) {
+        printf("%-20s %-20d %-20d\n", name[i], start[i], length[i]);
     }
+
+    return 0;
 }
