@@ -2,7 +2,9 @@ PGM	START	0
 .	**	ABC	P,Q
 **	STA	P
 **	STB	Q
-**	MEND	**
+.	**	ABC	R,S
+**	STA	R
+**	STB	S
 P	RESW	1
 Q	RESW	1
 R	RESW	1
