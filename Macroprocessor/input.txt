@@ -4,6 +4,7 @@ ABC MACRO &A,&B
 **   STB  &B 
 **   MEND **
 **   ABC  P,Q
+**   ABC  R,S
 P   RESW  1
 Q   RESW  1
 R   RESW  1

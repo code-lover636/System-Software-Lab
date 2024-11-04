@@ -51,8 +51,9 @@ int PROCESSLINE(){
     if(strcmp(opcode, "MACRO") == 0){
         DEFINE();
     } 
-    else
+    else if(strcmp(opcode, "MEND") != 0){
         fprintf(output, "%s\t%s\t%s\n", label, opcode, operand);
+    }
     
 }
 
@@ -92,7 +93,7 @@ int GETLINE(){
 }
 
 int set_up_arguments_in_argtab(){
-    argtab = fopen("argtab.txt", "a");
+    argtab = fopen("argtab.txt", "w");
     char arg[10];
     int j = 0;
 
