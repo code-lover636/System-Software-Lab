@@ -21,7 +21,7 @@ int fcfs(int n, int bt[n], int at[n], int id[n]){
 
 	for(int i=0; i<n; i++){
 		if(at[i]>time){
-			time += at[i]-time;
+			time = at[i];
 			printf("__ %d ", time);
 
 		}
