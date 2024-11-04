@@ -1,0 +1,9 @@
+PGM	START	0
+.	**	ABC	P,Q
+**	STA	P
+**	STB	Q
+**	MEND	**
+P	RESW	1
+Q	RESW	1
+R	RESW	1
+S	RESW	1
