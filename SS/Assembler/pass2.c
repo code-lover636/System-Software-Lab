@@ -12,15 +12,14 @@ int main(){
     char label[10], opcode[10], operand[10], loc[10], code[10], symbol[10];
     int prevaddr, finaddr, length,start;
 
-
     fscanf(inpF, "%s%s%s%s", loc, label, opcode, operand);
     while(strcmp(opcode, "END")!=0){
         prevaddr = atoi(loc);
         fscanf(inpF, "%s%s%s%s", loc, label, opcode, operand);
+
     }
     finaddr = atoi(loc);
     fclose(inpF);
-
 
     inpF = fopen("output.txt", "r");
     fscanf(inpF, "%s%s%s%s", loc, label, opcode, operand);
@@ -33,6 +32,7 @@ int main(){
     }
 
     while(strcmp(opcode, "END")!=0){
+
         if(strcmp(opcode,"BYTE")==0){
             fprintf(outF, "%s%10s%10s%10s\t", loc, label, opcode, operand);
             fprintf(objF, "^");

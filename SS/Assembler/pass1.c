@@ -3,9 +3,9 @@
 #include <string.h>
 
 int main(){
-    FILE * inpf = fopen("input.txt", "r");
-    FILE * opf = fopen("optab.txt", "r");
-    FILE * outf = fopen("output.txt", "w");
+    FILE *inpf = fopen("input.txt", "r");
+    FILE *opf = fopen("optab.txt", "r");
+    FILE *outf = fopen("output.txt", "w");
     FILE *symf = fopen("symtab.txt", "w");
 
     int locctr=0, start=0, prev;
