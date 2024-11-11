@@ -11,9 +11,8 @@ int main(){
     int locctr=0, start=0, prev;
     char operand[10], opcode[10], label[10], symbol[10], code[10];
 
-    fscanf(inpf, "%s%s%s", label, opcode, operand);
+    fscanf(inpf, "%s%s%x", label, opcode, &start);
     if(strcmp(opcode, "START")==0){
-        start = atoi(operand);
         locctr = start;
         fprintf(outf, "**%10s%10s%10s\n", label, opcode, operand);
         fscanf(inpf, "%s%s%s", label, opcode, operand);
@@ -55,11 +54,11 @@ int main(){
                 exit(0);
             }
         }
-        fprintf(outf, "%d%10s%10s%10s\n", prev, label, opcode, operand);
+        fprintf(outf, "%x%10s%10s%10s\n", prev, label, opcode, operand);
         fscanf(inpf, "%s%s%s", label, opcode, operand);
     }
     printf("length: %d\n", locctr-start);
-    fprintf(outf, "%d%10s%10s%10s\n", locctr, label, opcode, operand);
+    fprintf(outf, "%x%10s%10s%10s\n", locctr, label, opcode, operand);
     fclose(inpf);
     fclose(outf);
     fclose(symf);
