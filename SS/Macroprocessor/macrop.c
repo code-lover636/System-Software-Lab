@@ -3,14 +3,13 @@
 #include <string.h>
 
 FILE *argtab, *namtab, *deftab, *output, *input;
-char opcode[10], operand[10], label[10], parameter[10];
-int EXPANDING = 0;
-int POSITIONAL_VALUE = 1;
+char opcode[10], operand[10], label[10], parameter[10], ARGS[100][10];
+int EXPANDING = 0, POSITIONAL_VALUE = 1, LENGTH=0;
 
 int set_up_arguments_in_argtab();
 int substitute_arguments();
 int substitute_positional_notation();
-int PROCESSLINE();
+void PROCESSLINE();
 int DEFINE();
 int EXPAND();
 int GETLINE();
@@ -34,7 +33,7 @@ int main(){
 }
 
 
-int PROCESSLINE(){
+void PROCESSLINE(){
     
     //Searching NAMTAB for OPCODE
     namtab = fopen("namtab.txt", "r");
@@ -43,7 +42,7 @@ int PROCESSLINE(){
         if(strcmp(name, opcode) == 0){
             fclose(namtab);
             EXPAND();
-            return 0;
+            return;
         }
     }
 
@@ -60,27 +59,34 @@ int PROCESSLINE(){
 int substitute_arguments(){
     
     char arg[100][10];
-    int i = 0, j = 0;
+    int i = 0, index;
 
     //Reading arguments from argtab.txt to array arg
     argtab = fopen("argtab.txt", "r");
     while(fscanf(argtab, "%s", arg[i]) != EOF) i++;
     fclose(argtab);  
  
-    //positional notation - 1 will be the index of the corresponding argument in arg[]
-    parameter[0] = '\0';  
-    for(int i=0; i<strlen(operand); i++) {
-        if(operand[i] == '?'){
-            i++;
-            j = operand[i] - '1';
-            strcat(parameter, arg[j]);
-        } 
-        else 
-            strncat(parameter, &operand[i], 1);  
-    }
+    // //positional notation - 1 will be the index of the corresponding argument in arg[]
+    // parameter[0] = '\0';  
+    // for(int i=0; i<strlen(operand); i++) {
+    //     if(operand[i] == '?'){
+    //         i++;
+    //         j = operand[i] - '1';
+    //         strcat(parameter, arg[j]);
+    //     } 
+    //     else 
+    //         strncat(parameter, &operand[i], 1);  
+    // }
 
-    //Copying the substituted arguments to operand
-    strcpy(operand, parameter);
+    // //Copying the substituted arguments to operand
+    // strcpy(operand, parameter);
+
+    for(int i=1; i<strlen(operand); i++){
+        parameter[i-1] = operand[i];
+    }
+    parameter[i-1] = '\0';
+    index = atoi(parameter)-1;
+    strcpy(operand, arg[index]);
 }
 
 int GETLINE(){
@@ -102,7 +108,9 @@ int set_up_arguments_in_argtab(){
         if(operand[i] == ','){
             arg[j] = '\0';
             fprintf(argtab, "%s\n", arg);
-            j = 0;
+            j = 0;    // for(int j=0; j<i; j++){
+    //     printf("%s\n",ARGS[j]);
+    // }
         } 
         else 
             arg[j++] = operand[i];
@@ -133,25 +141,27 @@ int EXPAND(){
 }
 
 int substitute_positional_notation(){
-    char arg[10];
-    int i = 0;
     
     //Positional notation - ?1, ?2, ?3, ...
-    while(operand[i] != '\0'){
-        if(operand[i] == '&'){      
-            sprintf(parameter, "?%d\0", POSITIONAL_VALUE++);
-        }
-        i++;
+    parameter[0] = '\0';
+    char * token = strtok(operand, ",");
+    while(token != NULL){
+        sprintf(parameter, "%s?%d",parameter, ++LENGTH);
+        strcpy(ARGS[LENGTH-1], token);
+        token = strtok(NULL, ",");
+        if(token != NULL)
+            strcat(parameter,",");
     }
-    
 }
 
+
 int DEFINE(){
-    namtab = fopen("namtab.txt", "a");  
-    deftab = fopen("deftab.txt", "a");  
+    namtab = fopen("namtab.txt", "w");  
+    deftab = fopen("deftab.txt", "w");  
 
     fprintf(namtab, "%s\n", label);
-    fprintf(deftab, "%s\t%s\t%s\n", label, opcode, operand);
+    substitute_positional_notation();
+    fprintf(deftab, "%s\t%s\t%s\n", label, opcode, parameter);
     
     int LEVEL = 1;
     while(LEVEL > 0) {
@@ -167,7 +177,10 @@ int DEFINE(){
                 LEVEL--;
             }
             else {
-                substitute_positional_notation();
+                for(int i=0; i<LENGTH; i++)
+                    if(strcmp(operand, ARGS[i]) == 0)
+                        sprintf(parameter, "?%d",i+1);    
+
                 fprintf(deftab, "%s\t%s\t%s\n", label, opcode, parameter);
             }
         }

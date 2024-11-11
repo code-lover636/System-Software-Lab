@@ -2,6 +2,7 @@ PGM START 0
 ABC MACRO &A,&B 
 **   STA  &A 
 **   STB  &B 
+**   STB  &A
 **   MEND **
 **   ABC  P,Q
 **   ABC  R,S

@@ -1,4 +1,5 @@
-ABC	MACRO	&A,&B
+ABC	MACRO	?1,?2
 **	STA	?1
 **	STB	?2
+**	STB	?1
 **	MEND	**

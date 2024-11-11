@@ -2,13 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-char bitmask[12];
 char bit[13] = {0};
-
-FILE *inputF, *outputF;
-char progname[10], starting_address[10], length[10], input[10];
-int PROGADDR;
-
 
 int convert(char h[12]) {
     strcpy(bit, "");
@@ -67,55 +61,52 @@ int convert(char h[12]) {
     }
 }
 
+int main(){
+    FILE *input, *output;
+    char line[100], *bitmask, *token, *pgname, *start_addr, *length, *tlen;
+    int PROGADDR, start;
 
-int main() {
-    inputF = fopen("input.txt", "r");
-    outputF = fopen("output.txt", "w");
+    input = fopen("input.dat", "r");
+    output = fopen("output.dat", "w");
 
     printf("Enter the actual starting address : ");
     scanf("%x", &PROGADDR);
 
-    fscanf(inputF, "%s", input);
-    fprintf(outputF, "---------------------------\n");
-    fprintf(outputF, " ADDRESS\tCONTENT\n");
-    fprintf(outputF, "---------------------------\n");
-    while (strcmp(input, "E") != 0) {
-        
-        //Read Header Record
-        if (strcmp(input, "H") == 0) {
-            fscanf(inputF, "%s", progname);
-            fscanf(inputF, "%x", starting_address);
-            fscanf(inputF, "%x", length);
-            fscanf(inputF, "%s", input);
-        }
-
-        //Read Text Record
-        int address, tlen, opcode, addr, actualadd;
-        char relocbit;
-
-        if (strcmp(input, "T") == 0) {
-            fscanf(inputF, "%x", &address);
-            fscanf(inputF, "%x", &tlen);
-            fscanf(inputF, "%s", bitmask);
-            address += PROGADDR;
-            convert(bitmask);
-
-            for (int i = 0; i < strlen(bit); i++) {
-                fscanf(inputF, "%x", &opcode);
-                fscanf(inputF, "%x", &addr);
-            
-                relocbit = bit[i];
-                if (relocbit == '0')
-                    actualadd = addr;
-                else
-                    actualadd = addr + PROGADDR;
-                fprintf(outputF, "\n %x\t\t%x%x\n", address, opcode, actualadd);
-                address += 3;
-            }
-            fscanf(inputF, "%s", input);
-        }
+    fscanf(input, "%s", line);
+    token = strtok(line, "^");
+    if(strcmp(token, "H") == 0){
+        pgname = strtok(NULL, "^");
+        start_addr = strtok(NULL, "^");
+        length = strtok(NULL, "^");
     }
 
-    fclose(inputF);
-    fclose(outputF);
+    while(line[0] != 'E'){
+        fscanf(input, "%s", line);
+        token = strtok(line, "^");
+
+        if(strcmp(token, "T")==0){
+            token = strtok(NULL, "^");
+            start = strtol(token, NULL, 16);
+            printf("start: %x\n", start);
+            tlen = strtok(NULL, "^");
+            printf("length: %s\n", tlen);
+            bitmask = strtok(NULL, "^");
+            printf("bitmask: %s\n", bitmask);
+
+            convert(bitmask);
+            for(int i=0; i<strlen(bit); i++){
+                token = strtok(NULL, "^");
+                if(token == NULL) break;
+                int addr = strtol(token, NULL, 16);
+                if(bit[i] == '1'){
+                    addr += PROGADDR;
+                    
+                }
+                fprintf(output, "%06x\t%06x\n", start, addr);
+                start += 3;
+            }
+        }
+    }
+    fclose(input);
+    fclose(output);
 }
