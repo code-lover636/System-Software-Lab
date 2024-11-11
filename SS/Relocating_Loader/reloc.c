@@ -87,11 +87,8 @@ int main(){
         if(strcmp(token, "T")==0){
             token = strtok(NULL, "^");
             start = strtol(token, NULL, 16);
-            printf("start: %x\n", start);
             tlen = strtok(NULL, "^");
-            printf("length: %s\n", tlen);
             bitmask = strtok(NULL, "^");
-            printf("bitmask: %s\n", bitmask);
 
             convert(bitmask);
             for(int i=0; i<strlen(bit); i++){
