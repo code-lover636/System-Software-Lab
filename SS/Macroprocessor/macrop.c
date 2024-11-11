@@ -4,7 +4,7 @@
 
 FILE *argtab, *namtab, *deftab, *output, *input;
 char opcode[10], operand[10], label[10], parameter[10], ARGS[100][10];
-int EXPANDING = 0, POSITIONAL_VALUE = 1, LENGTH=0;
+int EXPANDING = 0, LENGTH=0, line=0;
 
 int set_up_arguments_in_argtab();
 int substitute_arguments();
@@ -16,8 +16,6 @@ int GETLINE();
 
 
 int main(){
-
-    argtab = fopen("argtab.txt", "w");
     output = fopen("expanded_file.txt", "w");
     input = fopen("input.txt", "r");
 
@@ -26,8 +24,6 @@ int main(){
         PROCESSLINE();
         GETLINE();
     }
-
-    fclose(argtab);
     fclose(output);
     fclose(input);
 }
@@ -99,7 +95,7 @@ int GETLINE(){
 }
 
 int set_up_arguments_in_argtab(){
-    argtab = fopen("argtab.txt", "w");
+    argtab = fopen("argtab.txt", "a");
     char arg[10];
     int j = 0;
 
@@ -123,12 +119,23 @@ int set_up_arguments_in_argtab(){
 int EXPAND(){
     EXPANDING = 1;
     deftab = fopen("deftab.txt", "r");
+    namtab = fopen("namtab.txt", "r");
 
-    set_up_arguments_in_argtab();  
+    char name[10];
+    int start, end;
+    fscanf(namtab, "%s\t%d\t%d", name, &start, &end);
+    while(strcmp(name,opcode) != 0)
+        fscanf(namtab, "%s\t%d\t%d", name, &start, &end);
+
     fprintf(output, ".\t%s\t%s\t%s\n", label, opcode, operand);
+    set_up_arguments_in_argtab();  
+
+    for(int i=0; i<=start; i++){
+        fscanf(deftab, "%s%s%s", label, opcode, operand);
+    }
 
     //Skip the first line of the macro (macro heading)
-    fscanf(deftab, "%s%s%s", label, opcode, operand);
+    // fscanf(deftab, "%s%s%s", label, opcode, operand);
 
     while(strcmp(opcode, "MEND") != 0){
         GETLINE();
@@ -136,6 +143,7 @@ int EXPAND(){
     }
 
     EXPANDING = 0;
+    fclose(namtab);
     fclose(deftab);
     return 0;
 }
@@ -148,6 +156,7 @@ int substitute_positional_notation(){
     while(token != NULL){
         sprintf(parameter, "%s?%d",parameter, ++LENGTH);
         strcpy(ARGS[LENGTH-1], token);
+        printf("%s\n", token);
         token = strtok(NULL, ",");
         if(token != NULL)
             strcat(parameter,",");
@@ -156,12 +165,13 @@ int substitute_positional_notation(){
 
 
 int DEFINE(){
-    namtab = fopen("namtab.txt", "w");  
-    deftab = fopen("deftab.txt", "w");  
+    namtab = fopen("namtab.txt", "a");  
+    deftab = fopen("deftab.txt", "a");  
 
-    fprintf(namtab, "%s\n", label);
+    fprintf(namtab, "%s\t%d\t", label, line);
     substitute_positional_notation();
     fprintf(deftab, "%s\t%s\t%s\n", label, opcode, parameter);
+    line++;
     
     int LEVEL = 1;
     while(LEVEL > 0) {
@@ -174,6 +184,7 @@ int DEFINE(){
             }
             else if(strcmp(opcode, "MEND") == 0){
                 fprintf(deftab, "**\tMEND\t**\n");
+                line++;
                 LEVEL--;
             }
             else {
@@ -182,10 +193,11 @@ int DEFINE(){
                         sprintf(parameter, "?%d",i+1);    
 
                 fprintf(deftab, "%s\t%s\t%s\n", label, opcode, parameter);
+                line++;
             }
         }
     }
-
+    fprintf(namtab, "%d\n", line);
     fclose(namtab);
     fclose(deftab);
 }

@@ -3,11 +3,17 @@ PGM	START	0
 **	STA	P
 **	STB	Q
 **	STB	P
-.	**	ABC	R,S
-**	STA	R
+.	**	PS	R,S
+**	STB	R
 **	STB	S
 **	STB	R
+.	**	KK	L,H
+**	STA	L
+**	STA	L
+**	STA	H
 P	RESW	1
 Q	RESW	1
 R	RESW	1
 S	RESW	1
+H	RESW	1
+L	RESW	1
