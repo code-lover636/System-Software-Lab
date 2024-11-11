@@ -23,7 +23,7 @@ int main(){
         prev = locctr;
         // label
         if(strcmp(label, "**") != 0){
-            fprintf(symf, "%s\t%d\n", label, locctr);
+            fprintf(symf, "%s\t%x\n", label, locctr);
         }
 
         //opcode
@@ -57,7 +57,7 @@ int main(){
         fprintf(outf, "%x%10s%10s%10s\n", prev, label, opcode, operand);
         fscanf(inpf, "%s%s%s", label, opcode, operand);
     }
-    printf("length: %d\n", locctr-start);
+    printf("length: %x\n", locctr-start);
     fprintf(outf, "%x%10s%10s%10s\n", locctr, label, opcode, operand);
     fclose(inpf);
     fclose(outf);
