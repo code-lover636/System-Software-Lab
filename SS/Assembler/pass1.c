@@ -14,7 +14,7 @@ int main(){
     fscanf(inpf, "%s%s%x", label, opcode, &start);
     if(strcmp(opcode, "START")==0){
         locctr = start;
-        fprintf(outf, "**%10s%10s%10s\n", label, opcode, operand);
+        fprintf(outf, "**%10s%10s\t%x\n", label, opcode, start);
         fscanf(inpf, "%s%s%s", label, opcode, operand);
     }
     
