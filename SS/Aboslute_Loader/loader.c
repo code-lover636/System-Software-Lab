@@ -48,12 +48,12 @@ int main() {
             i++;
         }
         printf("Starting Address: %s\n", address);
-        starting_address = atoi(address);
+        starting_address = strtol(address, NULL, 16);
         i += 4;
         while(i<strlen(record)-1){
             if(record[i] != '^'){
-                printf("%06d\t%c%c\n", starting_address, record[i], record[i+1]);
-                fprintf(output, "%06d\t%c%c\n", starting_address, record[i], record[i+1]);
+                printf("%06x\t%c%c\n", starting_address, record[i], record[i+1]);
+                fprintf(output, "%06x\t%c%c\n", starting_address, record[i], record[i+1]);
                 starting_address++;
                 i += 2;
             }
